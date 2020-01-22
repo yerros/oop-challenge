@@ -8,7 +8,8 @@ class Cipher {
         const icipher = crypto.createCipheriv('aes-192-cbc', key, iv)
         let encrypted = icipher.update(value, 'utf8', 'hex')
         encrypted += icipher.final('hex')
-        console.log(`Anyone without password can't read this message`);
+        //console.log(key);
+        //console.log(`Anyone without password can't read this message`);
         return encrypted
         
     }

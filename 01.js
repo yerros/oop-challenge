@@ -3,7 +3,7 @@ const crypto = require('crypto')
 class Hash {
     
     static md5(value){
-        const toMd5 = crypto.createHash('md5')
+        const toMd5 = crypto.createHash('')
         const hash = toMd5.update(value).digest('hex')
         console.log(hash);
     }
@@ -28,4 +28,4 @@ class Hash {
 
 }
 
-Hash.sha512('secret');
+Hash.md5('secret');

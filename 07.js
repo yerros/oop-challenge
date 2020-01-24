@@ -2,9 +2,9 @@ const data = {
   username: "mul14344",
   email: "email@email.com",
   name: "Mulia",
-  zip: 7,
+  zip: 7000,
   is_admin: true,
-  age: 28
+  age: 90
 };
 
 const rules = {
@@ -29,86 +29,75 @@ class Validator {
   }
 
   passes() {
-    this.rule(data.username, "username");
-    this.rule(data.email, "email");
-    this.rule(data.name, "name");
-    this.rule(data.zip, "zip");
-    this.rule(data.is_admin, "admin");
-    this.rule(data.age, "age");
+    this.runCheck(data.username, rules.username);
+    this.runCheck(data.email, rules.email);
+    this.runCheck(data.name, rules.name);
+    this.runCheck(data.zip, rules.zip);
+    this.runCheck(data.is_admin, rules.is_admin);
+    this.runCheck(data.age, rules.age);
   }
 
-  messages = type => {
-    return `The ${type} field is required.`;
+  runCheck = (value, rule) => {
+    const rules = rule.split("|");
+    if (rules.length >= 2) {
+      rules.map(item => {
+        const result = this.check(value, item);
+        console.log(result);
+      });
+    } else {
+      const result = this.check(value, rule);
+      console.log(result);
+    }
   };
 
-  rule = (value, type) => {
-    // check username
-    const checkUsername = username => {
-      const regex = /^[a-z0-9]+$/i;
-      const result = username.match(regex);
-      if (result == null) {
-        return this.messages(type);
+  check = (value, rule) => {
+    if (rule == "required") {
+      if (!value) {
+        return this.messages();
       } else {
         return true;
       }
-    };
-    // check email
-    const checkEmail = email => {
+    } else if (rule == "alphanum") {
+      const regex = /^[a-z0-9]+$/i;
+      const result = value.match(regex);
+      if (result == null) {
+        return this.messages();
+      } else {
+        return true;
+      }
+    } else if (rule == "email") {
       const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      const result = email.match(regex);
+      const result = value.match(regex);
       if (result == null) {
-        return this.messages(type);
+        return this.messages();
       } else {
         return true;
       }
-    };
-    // Check Name
-    const checkName = name => {
-      const regex = /^[a-z0-9]+$/i;
-      const result = name.match(regex);
-      if (result == null) {
-        return this.messages(type);
+    } else if (rule == "numeric") {
+      if (typeof value == "number") {
+        return true;
+      } else {
+        return this.messages();
+      }
+    } else if (rule == "boolean") {
+      if (typeof value == "boolean") {
+        return true;
+      } else {
+        return this.messages();
+      }
+    } else if (rule == "min:21") {
+      if (value <= 21) {
+        return this.messages();
       } else {
         return true;
       }
-    };
-    // Check Zip
-    const checkZip = zips => {
-      if (zips == !Number) {
-        return this.messages(type);
-      } else {
-        return true;
-      }
-    };
-    // Check Admin
-    const checkAdmin = admin => {
-      if (admin == !Boolean) {
-        return this.messages(type);
-      } else {
-        return true;
-      }
-    };
-    // check Age
-    const checkAge = age => {
-      if (age == !Number && age < 21) {
-        return "The Age field must a number.";
-      } else {
-        return true;
-      }
-    };
-    if (type == "username") {
-      console.log(checkUsername(value));
-    } else if (type == "email") {
-      console.log(checkEmail(value));
-    } else if (type == "name") {
-      console.log(checkName(value));
-    } else if (type == "zip") {
-      console.log(checkZip(value));
-    } else if (type == "admin") {
-      console.log(checkAdmin(value));
-    } else if (type == "age") {
-      console.log(checkAge(value));
+    } else {
+      return "belum di isi";
     }
+  };
+
+  messages = () => {
+    return `The %s field is required.`;
   };
 }
 
